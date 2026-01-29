@@ -11,7 +11,8 @@ const createEntry = asyncHandler(async (req, res) => {
 });
 
 const getEntries = asyncHandler(async (req, res) => {
-  const entries = await entryService.getAllEntries();
+  const entries = await entryService.getAllEntries(req.query);
+
   res.status(200).json({
     success: true,
     count: entries.length,
