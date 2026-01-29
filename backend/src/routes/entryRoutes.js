@@ -9,4 +9,8 @@ router.post('/', validateEntry, entryController.createEntry);
 
 router.get('/', entryController.getEntries);
 
+router.put('/:id', validateEntry, entryController.updateEntry);
+
+router.delete('/:id', entryController.deleteEntry);
+
 module.exports = router;

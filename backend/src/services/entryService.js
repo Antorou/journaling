@@ -36,6 +36,29 @@ const getAllEntries = async (filters = {}) => {
   return await Entry.find(query).sort({ date: -1 });
 };
 
+const updateEntry = async (id, updateData) => {
+  const entry = await Entry.findByIdAndUpdate(id, updateData, {
+    new: true,
+    runValidators: true
+  });
+
+  if (!entry) {
+    throw new Error('Entrée introuvable');
+  }
+
+  return entry;
+};
+
+const deleteEntry = async (id) => {
+  const entry = await Entry.findByIdAndDelete(id);
+  
+  if (!entry) {
+    throw new Error('Entrée introuvable');
+  }
+
+  return entry;
+};
+
 const getStats = async () => {
   return await Entry.aggregate([
     {
@@ -72,5 +95,7 @@ const getStats = async () => {
 module.exports = {
   createEntry,
   getAllEntries,
+  updateEntry,
+  deleteEntry,
   getStats
 };

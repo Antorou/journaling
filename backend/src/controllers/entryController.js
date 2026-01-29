@@ -20,6 +20,24 @@ const getEntries = asyncHandler(async (req, res) => {
   });
 });
 
+const updateEntry = asyncHandler(async (req, res) => {
+  const updatedEntry = await entryService.updateEntry(req.params.id, req.body);
+  
+  res.status(200).json({
+    success: true,
+    data: updatedEntry
+  });
+});
+
+const deleteEntry = asyncHandler(async (req, res) => {
+  await entryService.deleteEntry(req.params.id);
+  
+  res.status(200).json({
+    success: true,
+    message: "Entrée supprimée avec succès"
+  });
+});
+
 const getStats = asyncHandler(async (req, res) => {
   const stats = await entryService.getStats();
   
@@ -29,4 +47,4 @@ const getStats = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { createEntry, getEntries, getStats };
+module.exports = { createEntry, getEntries, updateEntry, deleteEntry, getStats };
