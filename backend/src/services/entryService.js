@@ -35,7 +35,42 @@ const getAllEntries = async (filters = {}) => {
 
   return await Entry.find(query).sort({ date: -1 });
 };
+
+const getStats = async () => {
+  return await Entry.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalDays: { $sum: 1 },
+        avgSportDuration: { $avg: "$sport.duration" },
+        totalSportMinutes: { $sum: "$sport.duration" },
+        daysWithAlcohol: { 
+          $sum: { $cond: [{ $eq: ["$alcohol", true] }, 1, 0] } 
+        },
+        daysGoodMood: {
+          $sum: { $cond: [{ $eq: ["$mood.status", "good"] }, 1, 0] }
+        },
+        totalReadingMinutes: { $sum: "$reading.duration" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        totalDays: 1,
+        totalSportMinutes: 1,
+        totalReadingMinutes: 1,
+        avgSportDuration: { $round: ["$avgSportDuration", 1] },
+        alcoholFreeDays: { $subtract: ["$totalDays", "$daysWithAlcohol"] },
+        goodMoodPercentage: { 
+          $multiply: [{ $divide: ["$daysGoodMood", "$totalDays"] }, 100] 
+        }
+      }
+    }
+  ]);
+};
+
 module.exports = {
   createEntry,
-  getAllEntries
+  getAllEntries,
+  getStats
 };

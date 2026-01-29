@@ -20,4 +20,13 @@ const getEntries = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { createEntry, getEntries };
+const getStats = asyncHandler(async (req, res) => {
+  const stats = await entryService.getStats();
+  
+  res.status(200).json({
+    success: true,
+    data: stats[0] || { message: "Aucune donnée pour le moment" }
+  });
+});
+
+module.exports = { createEntry, getEntries, getStats };
