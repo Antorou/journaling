@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const entryController = require('../controllers/entryController');
 const { validateEntry } = require('../middlewares/validationMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
+
+router.use(protect);
 
 router.get('/stats', entryController.getStats);
 

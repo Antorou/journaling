@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const entrySchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Nom du modèle vers lequel on pointe
+    required: [true, "Une entrée doit appartenir à un utilisateur"]
+  },
+
   // on utilise la date comme identifiant naturel, formatée à minuit pour éviter les doublons
   date: {
     type: Date,
@@ -57,6 +63,6 @@ const entrySchema = new mongoose.Schema({
 });
 
 // indexer la date pour des recherches ultra-rapides
-entrySchema.index({ date: -1 });
+entrySchema.index({ user: 1, date: 1 }, { unique: true });
 
 module.exports = mongoose.model('Entry', entrySchema);
