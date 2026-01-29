@@ -1,18 +1,21 @@
 const Entry = require('../models/Entry');
 
-const createEntry = async (entryData) => {
-  const existingEntry = await Entry.findOne({ date: entryData.date });
+const createEntry = async (entryData, userId) => {
+  const existingEntry = await Entry.findOne({ 
+    date: entryData.date,
+    user: userId
+  });
   
   if (existingEntry) {
     throw new Error('Une entrée existe déjà pour cette date.');
   }
 
-  const newEntry = new Entry(entryData);
+  const newEntry = new Entry({ ...entryData, user: userId });
   return await newEntry.save();
 };
 
-const getAllEntries = async (filters = {}) => {
-  const query = {};
+const getAllEntries = async (filters = {}, userId) => {
+  const query = { user: userId};
 
   if (filters.startDate || filters.endDate) {
     query.date = {};
@@ -36,11 +39,12 @@ const getAllEntries = async (filters = {}) => {
   return await Entry.find(query).sort({ date: -1 });
 };
 
-const updateEntry = async (id, updateData) => {
-  const entry = await Entry.findByIdAndUpdate(id, updateData, {
-    new: true,
-    runValidators: true
-  });
+const updateEntry = async (id, updateData, userId) => {
+  const entry = await Entry.findOneAndUpdate(
+    { _id: id, user: userId }, 
+    updateData, 
+    { new: true, runValidators: true }
+  );
 
   if (!entry) {
     throw new Error('Entrée introuvable');
@@ -49,8 +53,8 @@ const updateEntry = async (id, updateData) => {
   return entry;
 };
 
-const deleteEntry = async (id) => {
-  const entry = await Entry.findByIdAndDelete(id);
+const deleteEntry = async (id, userId) => {
+  const entry = await Entry.findOneAndDelete({ _id: id, user: userId });
   
   if (!entry) {
     throw new Error('Entrée introuvable');
@@ -59,8 +63,11 @@ const deleteEntry = async (id) => {
   return entry;
 };
 
-const getStats = async () => {
+const getStats = async (userId) => {
   return await Entry.aggregate([
+    {
+      $match: { user: userId } 
+    },
     {
       $group: {
         _id: null,
