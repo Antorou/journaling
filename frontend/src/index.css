@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
-/* Tes styles personnalisés ici */
 @theme {
-  --color-primary: #6366f1;
-  --color-dark: #0f172a;
+  --color-brand: #6366f1;
+  --color-bg-dark: #0f172a;
   --color-surface: #1e293b;
+  --color-accent: #10b981;
 }
 
 body {
-  background-color: var(--color-dark);
+  background-color: var(--color-bg-dark);
   color: white;
-  font-family: sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
