@@ -50,8 +50,23 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const authenticatedFetch = async (endpoint, options = {}) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`http://localhost:5000/api${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || 'Erreur API');
+  return data;
+};
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, authenticatedFetch}}>
       {!loading && children}
     </AuthContext.Provider>
   );
