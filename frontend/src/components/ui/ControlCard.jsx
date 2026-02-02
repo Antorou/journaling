@@ -16,7 +16,6 @@ const ControlCard = ({ label, active, onToggle, icon: Icon, children }) => (
       </button>
     </div>
     
-    {/* Contenu qui apparaît quand c'est actif (ex: inputs de durée) */}
     {active && (
       <div className="mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
         {children}

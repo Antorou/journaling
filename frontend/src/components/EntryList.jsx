@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import EntryCard from './EntryCard';
 import { Loader2 } from 'lucide-react';
 
-const EntryList = ({ refreshSignal }) => {
+const EntryList = ({ refreshSignal, onEdit, onView }) => { 
   const { authenticatedFetch } = useAuth();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,13 @@ const EntryList = ({ refreshSignal }) => {
         </div>
       ) : (
         entries.map((entry) => (
-          <EntryCard key={entry._id} entry={entry} />
+          <EntryCard 
+            key={entry._id} 
+            entry={entry} 
+            onRefresh={fetchEntries} 
+            onEdit={onEdit}
+            onView={onView} 
+          />
         ))
       )}
     </div>

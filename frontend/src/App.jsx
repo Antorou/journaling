@@ -5,11 +5,13 @@ import Layout from './components/Layout';
 import DailyForm from './components/DailyForm';
 import EntryList from './components/EntryList';
 import StatsSection from './components/StatsSection';
+import EntryDetailModal from './components/EntryDetailModal';
 
 function App() {
   const { user } = useAuth();
   const [refreshSignal, setRefreshSignal] = useState(0);
   const [editingEntry, setEditingEntry] = useState(null);
+  const [selectedEntry, setSelectedEntry] = useState(null);
 
   const handleEntryAction = () => {
     setRefreshSignal(prev => prev + 1);
@@ -50,9 +52,14 @@ function App() {
           <EntryList 
             refreshSignal={refreshSignal} 
             onEdit={handleStartEdit} 
+            onView={(entry) => setSelectedEntry(entry)}
           />
         </section>
       </div>
+      <EntryDetailModal 
+        entry={selectedEntry} 
+        onClose={() => setSelectedEntry(null)} 
+      />
     </Layout>
   );
 }

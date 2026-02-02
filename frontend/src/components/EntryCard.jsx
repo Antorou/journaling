@@ -1,10 +1,12 @@
 import { Trash2, Edit3, Smile, Meh, Frown, Dumbbell, Book, Wine, Wind } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const EntryCard = ({ entry, onRefresh, onEdit }) => {
+const EntryCard = ({ entry, onRefresh, onEdit, onView }) => {
   const { authenticatedFetch } = useAuth();
 
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    // Empêche d'ouvrir le modal de détail quand on veut supprimer
+    e.stopPropagation(); 
     if (!window.confirm("Supprimer cette entrée ?")) return;
     try {
       await authenticatedFetch(`/entries/${entry._id}`, { method: 'DELETE' });
@@ -12,6 +14,12 @@ const EntryCard = ({ entry, onRefresh, onEdit }) => {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const handleEdit = (e) => {
+    // Empêche d'ouvrir le modal de détail quand on veut éditer
+    e.stopPropagation();
+    onEdit(entry);
   };
 
   const date = new Date(entry.date).toLocaleDateString('fr-FR', {
@@ -28,13 +36,22 @@ const EntryCard = ({ entry, onRefresh, onEdit }) => {
   const MoodIcon = config.icon;
 
   return (
-    <div className={`group relative p-5 rounded-3xl border ${config.bg} ${config.border} transition-all hover:scale-[1.01]`}>
-      {/* ACTIONS : Visibles au hover sur Desktop, toujours sur Mobile */}
-      <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button onClick={() => onEdit(entry)} className="p-2 hover:bg-white/10 rounded-xl text-white/40 hover:text-white transition-colors">
+    <div 
+      onClick={() => onView(entry)} // Déclenche l'ouverture du modal de détail
+      className={`group relative p-5 rounded-3xl border cursor-pointer transition-all hover:scale-[1.01] active:scale-[0.98] ${config.bg} ${config.border}`}
+    >
+      {/* BOUTONS ACTIONS */}
+      <div className="absolute top-4 right-4 flex gap-1 sm:opacity-0 group-hover:opacity-100 transition-opacity z-20">
+        <button 
+          onClick={handleEdit} 
+          className="p-2 hover:bg-white/10 rounded-xl text-white/40 hover:text-white transition-colors"
+        >
           <Edit3 size={16} />
         </button>
-        <button onClick={handleDelete} className="p-2 hover:bg-red-500/20 rounded-xl text-white/40 hover:text-red-400 transition-colors">
+        <button 
+          onClick={handleDelete} 
+          className="p-2 hover:bg-red-500/20 rounded-xl text-white/40 hover:text-red-400 transition-colors"
+        >
           <Trash2 size={16} />
         </button>
       </div>
@@ -52,26 +69,28 @@ const EntryCard = ({ entry, onRefresh, onEdit }) => {
       </div>
 
       {entry.mood.description && (
-        <p className="text-sm text-white/80 mb-4 italic line-clamp-2 pr-10">"{entry.mood.description}"</p>
+        <p className="text-sm text-white/80 mb-4 italic line-clamp-2 pr-10">
+          "{entry.mood.description}"
+        </p>
       )}
 
       <div className="flex flex-wrap gap-2">
         {entry.sport?.active && (
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
             <Dumbbell size={12} className="text-brand" />
-            <span className="text-[10px] font-bold uppercase">{entry.sport.duration}min</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight">{entry.sport.duration}min</span>
           </div>
         )}
         {entry.reading?.active && (
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
             <Book size={12} className="text-blue-400" />
-            <span className="text-[10px] font-bold uppercase">{entry.reading.duration}min</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight">{entry.reading.duration}min</span>
           </div>
         )}
         {entry.meditation?.active && (
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
             <Wind size={12} className="text-emerald-400" />
-            <span className="text-[10px] font-bold uppercase">{entry.meditation.duration}min</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight">{entry.meditation.duration}min</span>
           </div>
         )}
       </div>
