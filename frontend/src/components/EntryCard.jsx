@@ -84,7 +84,9 @@ const EntryCard = ({ entry, onRefresh, onEdit, onView }) => {
         {entry.reading?.active && (
           <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
             <Book size={12} className="text-blue-400" />
-            <span className="text-[10px] font-bold uppercase tracking-tight">{entry.reading.duration}min</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight">
+              {entry.reading.duration}min {entry.reading.bookTitle && `- ${entry.reading.bookTitle}`}
+            </span>
           </div>
         )}
         {entry.meditation?.active && (

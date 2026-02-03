@@ -3,7 +3,7 @@ const entryService = require('../services/entryService');
 
 const createEntry = asyncHandler(async (req, res) => {
   const savedEntry = await entryService.createEntry(req.body, req.user.id);
-  
+
   res.status(201).json({
     success: true,
     data: savedEntry
@@ -22,11 +22,11 @@ const getEntries = asyncHandler(async (req, res) => {
 
 const updateEntry = asyncHandler(async (req, res) => {
   const updatedEntry = await entryService.updateEntry(
-    req.params.id, 
-    req.body, 
+    req.params.id,
+    req.body,
     req.user.id
   );
-  
+
   res.status(200).json({
     success: true,
     data: updatedEntry
@@ -35,7 +35,7 @@ const updateEntry = asyncHandler(async (req, res) => {
 
 const deleteEntry = asyncHandler(async (req, res) => {
   await entryService.deleteEntry(req.params.id, req.user.id);
-  
+
   res.status(200).json({
     success: true,
     message: "Entrée supprimée avec succès"
@@ -44,17 +44,17 @@ const deleteEntry = asyncHandler(async (req, res) => {
 
 const getStats = asyncHandler(async (req, res) => {
   const stats = await entryService.getStats(req.user.id);
-  
+
   res.status(200).json({
     success: true,
-    data: stats[0] || { totalDays: 0, message: "Aucune donnée" }
+    data: stats.totalDays ? stats : { totalDays: 0, message: "Aucune donnée" }
   });
 });
 
-module.exports = { 
-  createEntry, 
-  getEntries, 
-  getStats, 
-  updateEntry, 
-  deleteEntry 
+module.exports = {
+  createEntry,
+  getEntries,
+  getStats,
+  updateEntry,
+  deleteEntry
 };

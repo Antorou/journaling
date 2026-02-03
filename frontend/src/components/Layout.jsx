@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
         <header className="flex justify-between items-center py-8 sticky top-0 bg-bg-dark/80 backdrop-blur-md z-10">
           <div>
             <h1 className="text-xl font-black tracking-tighter text-brand">JOURNAL.</h1>
-            <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Version 2.0</p>
+            <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">de bord</p>
           </div>
           
           <div className="flex items-center gap-4">

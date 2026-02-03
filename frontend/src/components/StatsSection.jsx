@@ -11,7 +11,7 @@ const StatsSection = ({ refreshSignal }) => {
     const fetchStats = async () => {
       try {
         const data = await authenticatedFetch('/entries/stats');
-        setStats(data.data); 
+        setStats(data.data);
       } catch (err) {
         console.error("Erreur stats:", err);
       } finally {
@@ -24,8 +24,9 @@ const StatsSection = ({ refreshSignal }) => {
   if (loading || !stats) return null;
 
   return (
-    <section className="grid grid-cols-2 gap-4">
-      <div className="col-span-2 bg-brand/10 border border-brand/20 p-6 rounded-3xl flex items-center justify-between">
+    <section className="space-y-4">
+      {/* Good Mood Banner */}
+      <div className="bg-brand/10 border border-brand/20 p-6 rounded-3xl flex items-center justify-between">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand mb-1">Bonne Humeur</p>
           <p className="text-4xl font-black">{Math.round(stats.goodMoodPercentage || 0)}%</p>
@@ -35,16 +36,45 @@ const StatsSection = ({ refreshSignal }) => {
         </div>
       </div>
 
-      <div className="bg-surface border border-white/5 p-5 rounded-3xl">
-        <Trophy size={20} className="text-yellow-500 mb-3" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Sport Total</p>
-        <p className="text-xl font-bold">{stats.totalSportMinutes || 0} <span className="text-[10px] opacity-50">min</span></p>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-surface border border-white/5 p-5 rounded-3xl">
+          <Trophy size={20} className="text-yellow-500 mb-3" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Sport Total</p>
+          <p className="text-xl font-bold">{stats.totalSportMinutes || 0} <span className="text-[10px] opacity-50">min</span></p>
+        </div>
+
+        <div className="bg-surface border border-white/5 p-5 rounded-3xl">
+          <Calendar size={20} className="text-emerald-500 mb-3" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Sans Alcool</p>
+          <p className="text-xl font-bold">{stats.alcoholFreeDays || 0} <span className="text-[10px] opacity-50">jours</span></p>
+        </div>
       </div>
 
-      <div className="bg-surface border border-white/5 p-5 rounded-3xl">
-        <Calendar size={20} className="text-emerald-500 mb-3" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Sans Alcool</p>
-        <p className="text-xl font-bold">{stats.alcoholFreeDays || 0} <span className="text-[10px] opacity-50">jours</span></p>
+      {/* Streaks Section */}
+      <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 p-6 rounded-3xl">
+        <h3 className="text-sm font-black uppercase tracking-wider text-orange-400 mb-4 flex items-center gap-2">
+          🔥 Séries en cours
+        </h3>
+        <div className="grid grid-cols-3 gap-4">
+          {/* Alcohol-Free Streak */}
+          <div className="text-center">
+            <div className="text-2xl font-black text-emerald-400">{stats.alcoholFreeStreak || 0}</div>
+            <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mt-1">Sans Alcool</div>
+          </div>
+
+          {/* Meditation Streak */}
+          <div className="text-center">
+            <div className="text-2xl font-black text-purple-400">{stats.meditationStreak || 0}</div>
+            <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mt-1">Méditation</div>
+          </div>
+
+          {/* Sport Streak */}
+          <div className="text-center">
+            <div className="text-2xl font-black text-blue-400">{stats.sportStreak || 0}</div>
+            <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mt-1">Sport</div>
+          </div>
+        </div>
       </div>
     </section>
   );
