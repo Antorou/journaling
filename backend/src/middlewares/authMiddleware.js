@@ -11,16 +11,19 @@ const protect = asyncHandler(async (req, res, next) => {
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await User.findById(decoded.id);
+      req.user = await User.findById(decoded.id).select('-password');
+
+      if (!req.user) {
+        res.status(401);
+        throw new Error('Non autorisé, utilisateur introuvable');
+      }
 
       next();
     } catch (error) {
       res.status(401);
       throw new Error('Non autorisé, token invalide');
     }
-  }
-
-  if (!token) {
+  } else {
     res.status(401);
     throw new Error('Non autorisé, aucun token fourni');
   }

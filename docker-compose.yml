@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: journaling_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - journaling_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: journaling_backend
+    restart: unless-stopped
+    ports:
+      - "5002:5002"
+    environment:
+      PORT: 5002
+      MONGO_URI: mongodb://admin:admin123@mongo:27017/journaling?authSource=admin
+      NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET:-57rd7fd88dg789gdg89gg789e4ufhnjsdnh8}
+    depends_on:
+      - mongo
+    networks:
+      - journaling_network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: journaling_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:5002/api
+    depends_on:
+      - backend
+    networks:
+      - journaling_network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+networks:
+  journaling_network:
+    driver: bridge
+
+volumes:
+  mongo_data:
